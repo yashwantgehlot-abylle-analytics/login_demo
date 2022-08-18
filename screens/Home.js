@@ -9,8 +9,7 @@ import {
   TouchableOpacity,
   AsyncStorage,
 } from "react-native";
-import Home from "./Home";
-export default class App extends Component {
+export default class Home extends Component {
   state = {
     username: "",
     password: "",
@@ -90,53 +89,53 @@ export default class App extends Component {
 
   render() {
     //If auth token is not present
-    if (this.state.auth_token == "") {
-      return (
-        <View>
-          <TouchableOpacity onPress={this.Signup.bind(this)}>
-            <View
+
+    //  this.props.navigation.navigate("Login")
+    // this.Signup.bind(this)
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("Login")}
+        >
+          <View
+            style={{
+              height: 50,
+              marginTop: 200,
+              backgroundColor: "purple",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
               style={{
-                height: 50,
-                marginTop: 200,
-                backgroundColor: "purple",
-                justifyContent: "center",
-                alignItems: "center",
+                fontSize: 20,
+                color: "#FFFFFF",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 20,
-                  color: "#FFFFFF",
-                }}
-              >
-                Logout
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.Login.bind(this)}>
-            <View
+              Logout
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this.Login.bind(this)}>
+          <View
+            style={{
+              height: 50,
+              backgroundColor: "purple",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
               style={{
-                height: 50,
-                backgroundColor: "purple",
-                justifyContent: "center",
-                alignItems: "center",
+                fontSize: 20,
+                color: "#FFFFFF",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 20,
-                  color: "#FFFFFF",
-                }}
-              >
-                Fetch Profile{" "}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      /* Checking if the auth token is not empty directly sending the user to Home screen */
-      return <App />;
-    }
+              Fetch Profile{" "}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
   }
 }
