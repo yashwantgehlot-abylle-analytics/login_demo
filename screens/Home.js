@@ -1,141 +1,33 @@
-import React, { Component } from "react";
-import axios from "axios";
-import {
-  View,
-  Text,
-  Alert,
-  Button,
-  TextInput,
-  TouchableOpacity,
-  AsyncStorage,
-} from "react-native";
-export default class Home extends Component {
-  state = {
-    username: "",
-    password: "",
-    auth_token: "",
-  };
-  Signup = async () => {
-    AsyncStorage.removeItem("Token");
-    AsyncStorage.clear;
-    this.setState({ auth_token: "" });
-    {
-      /*
+import React, { Component, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import HomeComponent from "../components/HomeComponent";
 
-        fetch("https://auth.clustername+.hasura-app.io/v1/signup", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        provider: "username",
-        data: {
-          username: this.state.username,
-          password: this.state.password,
-        },
-      }),
-    })
-      .then((response) => response.json())
-      .then((res) => {
-        if (typeof res.message != "undefined") {
-          Alert.alert("Error signing up", "Error: " + res.message);
-        } else {
-          this.setState({ auth_token: res.auth_token });
-          Alert.alert("Success", "You have succesfully signed up");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+export default function Home({ navigation }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  console.log("INSIDE HOME");
 
-
-  */
+  const getLayout = async () => {
+    const token = await AsyncStorage.getItem("Token");
+    if (token !== null) {
+      //setIsLoggedIn(true);
+      console.log("Home Token True");
+    } else {
+      //setIsLoggedIn(false);
+      console.log("Home Token False");
     }
   };
 
-  Login = async () => {
-    //    console.log("Bearer " + AsyncStorage.getItem("Token"));
-    AsyncStorage.getItem("Token", (err, item) => {
-      console.log("TOK:" + item);
-      axios
-        .get(
-          "http://vita.westus2.cloudapp.azure.com:8080/api/services/app/Profile/GetCurrentUserProfileForEdit",
-          {
-            headers: { Authorization: "Bearer " + item },
-          }
-        )
-        .then((response) => {
-          console.log(response.data);
+  useEffect(() => {
+    getLayout();
+  });
 
-          if (response.data.result == null) {
-            Alert.alert("Error", "Error: " + response.data.error.message);
-          } else {
-            AsyncStorage.setItem("Token", response.data.result.accessToken);
-            this.setState({ auth_token: response.data.result.accessToken });
-            Alert.alert(
-              response.data.result.emailAddress,
-              "Welcome " +
-                response.data.result.userName +
-                " " +
-                response.data.result.surname
-            );
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    });
-  };
+  if (isLoggedIn) {
+    console.log("Logged In showing HomeComponent");
 
-  render() {
-    //If auth token is not present
+    return <HomeComponent navigation={navigation} />;
+  } else {
+    console.log("Not Logged in going back to login");
 
-    //  this.props.navigation.navigate("Login")
-    // this.Signup.bind(this)
-    return (
-      <View>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("Login")}
-        >
-          <View
-            style={{
-              height: 50,
-              marginTop: 200,
-              backgroundColor: "purple",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                color: "#FFFFFF",
-              }}
-            >
-              Logout
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.Login.bind(this)}>
-          <View
-            style={{
-              height: 50,
-              backgroundColor: "purple",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                color: "#FFFFFF",
-              }}
-            >
-              Fetch Profile{" "}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
+    return navigation.navigate("Login");
   }
 }
